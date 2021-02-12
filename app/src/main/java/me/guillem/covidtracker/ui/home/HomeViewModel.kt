@@ -1,16 +1,27 @@
 package me.guillem.covidtracker.ui.home
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import me.guillem.covidtracker.repository.TotalCases
 
 class HomeViewModel : ViewModel() {
 
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is home Fragment"
+    private var mutableLiveData: MutableLiveData<TotalCases>? = null
+    private var totalCases: TotalCases? = null
+
+    init {
+        if (mutableLiveData != null) {
+
+        }
+        totalCases = TotalCases()
+        mutableLiveData = totalCases.
     }
-    val text: LiveData<String> = _text
+
+
+    fun getTotalRepository(): MutableLiveData<TotalCases>? {
+        return mutableLiveData
+    }
 
 
 }
