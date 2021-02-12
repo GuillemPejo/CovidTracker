@@ -1,40 +1,39 @@
 package me.guillem.covidtracker.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import me.guillem.covidtracker.R
-import me.guillem.covidtracker.api.DataEndpoints
-import me.guillem.covidtracker.api.RetrofitService
-import me.guillem.covidtracker.models.Request
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import me.guillem.covidtracker.data.api.conf.ServiceBuilder
+import me.guillem.covidtracker.data.api.model.CovidTracker
 
 class Example : AppCompatActivity() {
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_example)
-        searchByName()
-
+        val compositeDisposable = CompositeDisposable()
+        compositeDisposable.add(
+            ServiceBuilder.buildService().getCovidTrackerByDate("2021-02-11")
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({ response -> onResponse(response) }, { t -> onFailure(t) })
+        )
 
     }
 
-    private fun searchByName() {
-        var aa: String
-        val request = RetrofitService.buildService(DataEndpoints::class.java)
-        val call = request.getData()
+    private fun onFailure(t: Throwable) {
+        Toast.makeText(this, t.message, Toast.LENGTH_SHORT).show()
+    }
 
-        call.enqueue(object : Callback<Request> {
-            override fun onResponse(call: Call<Request>, response: Response<Request>) {
-                if (response.isSuccessful) {
-                    Log.e("DATA:----------", response.body()!!.updated_at)
-                }
-            }
+    private fun onResponse(response: CovidTracker) {
 
-            override fun onFailure(call: Call<Request>, t: Throwable) {
-                Log.e("Error", "Error: ${t.message}")
-            }
-        })
+        Log.e("AQUI", response.dates["2021-02-11"]!!.countries["Spain"].toString())
+
     }
 }

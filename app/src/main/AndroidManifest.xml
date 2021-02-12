@@ -11,7 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CovidTracker">
-        <activity android:name=".ui.Example">
+        <activity android:name="me.guillem.covidtracker.ui.Example">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
